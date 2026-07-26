@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktív Szorzótábla Memóriakártyák</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .perspective {
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        .flipped {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col items-center justify-center p-4 font-sans">
+
+    <div class="max-w-md w-full text-center">
+        <h1 class="text-3xl font-bold text-slate-800 mb-2">Szorzótábla Mester</h1>
+        <p class="text-slate-600 mb-8">Kattints a kártyára az eredmény megtekintéséhez!</p>
+
+        <div class="perspective h-64 w-full mb-8">
+            <div id="cardInner" class="flip-card-inner relative w-full h-full">
+                <!-- Előlap -->
+                <div class="flip-card-front bg-white border-2 border-blue-500 text-6xl font-bold text-blue-600">
+                    <span id="frontText">7 × 8</span>
+                </div>
+                <!-- Hátlap -->
+                <div class="flip-card-back bg-blue-500 text-white text-7xl font-bold">
+                    <span id="backText">56</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex gap-4 justify-center">
+            <button onclick="prevCard()" class="px-6 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-full transition font-semibold">
+                Előző
+            </button>
+            <button onclick="nextCard()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition font-semibold shadow-lg">
+                Következő kártya
+            </button>
+        </div>
+        
+        <div class="mt-6 text-sm text-slate-400">
+            Kártya: <span id="counter">1 / 25</span>
+        </div>
+    </div>
+
+    <script>
+        const cards = [];
+        // Generálunk 25 véletlenszerű feladatot
+        for (let i = 0; i < 25; i++) {
+            const a = Math.floor(Math.random() * 9) + 2;
+            const b = Math.floor(Math.random() * 9) + 2;
+            cards.push({ q: `${a} × ${b}`, a: a * b });
+        }
+
+        let currentIndex = 0;
+        const cardInner = document.getElementById('cardInner');
+        const frontText = document.getElementById('frontText');
+        const backText = document.getElementById('backText');
+        const counter = document.getElementById('counter');
+
+        function updateCard() {
+            cardInner.classList.remove('flipped');
+            setTimeout(() => {
+                frontText.innerText = cards[currentIndex].q;
+                backText.innerText = cards[currentIndex].a;
+                counter.innerText = `${currentIndex + 1} / ${cards.length}`;
+            }, 150);
+        }
+
+        function nextCard() {
+            currentIndex = (currentIndex + 1) % cards.length;
+            updateCard();
+        }
+
+        function prevCard() {
+            currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+            updateCard();
+        }
+
+        cardInner.addEventListener('click', () => {
+            cardInner.classList.toggle('flipped');
+        });
+
+        // Kezdő kártya beállítása
+        updateCard();
+    </script>
+</body>
+</html>
