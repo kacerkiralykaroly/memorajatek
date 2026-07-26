@@ -1,0 +1,2 @@
+# memorajatek
+Szorzótábla tanulása
